@@ -1,0 +1,178 @@
+{% load static %}
+{% load staticfiles %}
+
+
+<html>
+
+<head>
+  {% block head %}
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="author" content="Sarbadal Pal">
+    <meta name="description" content="https://www.watchthecityweather.com/ - This cool way to watch weather across world.">
+    <meta name="keywords" content="my python projects, python, python projects, class, data structure, weather, city, cities, country, live weather" />
+
+    <link rel="shortcut icon" href="{% static 'favicon/favicon_weather.png' %}"/>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href='https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="{% static 'CSS/main.css' %}">
+    <link href="https://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet" type="text/css"/>
+
+
+    {% if title %}
+        <title>Watch the City Weather  - {{ title }}</title>
+    {% else %}
+        <title>Watch the City Weather</title>
+    {% endif %}
+
+      <style>
+          .tabBlock
+          {
+              /* background-color:#57574f; */
+              border:solid 0px #FFA54F;
+              border-radius:5px; -moz-border-radius:5px; -webkit-border-radius:5px;
+              max-width:200px;
+              width:100%;
+              overflow:hidden;
+              display:block;
+          }
+          .clock
+          {
+              vertical-align:middle;
+              font-family:Orbitron;
+              font-size:30px;
+              font-weight:normal;
+              color:#FFF;
+              padding:0 5px;
+          }
+          .clocklg
+          {
+              vertical-align:middle;
+              font-family:Orbitron;
+              font-size:15px;
+              font-weight:normal;
+              color:#FFF;
+          }
+      </style>
+
+  {% endblock %}
+</head>
+
+<body onload="digitized();">
+    <header class="site-header">
+      <nav class="navbar navbar-expand-md bg-steel fixed-top navbar-light" style="background-color: #8587f2;">
+
+        <div class="container">
+
+          <a class="navbar-brand mr-4" href="{% url 'home' %}">What's the weather look like?</a>
+
+          <div>
+              <table class="tabBlock" align="center" cellspacing="0" cellpadding="0" border="0">
+                  <tr><td class="clock" id="dc"></td>  <!-- THE DIGITAL CLOCK. -->
+                      <td>
+                          <table cellpadding="0" cellspacing="0" border="0">
+
+                              <!-- HOUR IN 'AM' AND 'PM'. -->
+                              <tr><td class="clocklg" id="dc_hour"></td></tr>
+
+                              <!-- SHOWING SECONDS. -->
+                              <tr><td class="clocklg" id="dc_second"></td></tr>
+                          </table>
+                      </td>
+                  </tr>
+              </table>
+          </div>
+
+          {% if user.is_authenticated %}
+          <a class="nav-item nav-link disabled">Welcome {{user.first_name}}!</a>
+          {% endif %}
+
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+          </button>
+
+            <!-- Navbar Right Side -->
+            <div class="navbar-nav">
+                <ul class="nav justify-content-end">
+                  {% if user.is_authenticated %}
+                    <li class="nav-item"> <a class="nav-item nav-link" href="{% url 'profile' %}">{{user.email}}</a> </li>
+                    <li class="nav-item"> <a class="nav-item nav-link " href="{% url 'logout' %}">Logout</a> </li>
+                  {% else %}
+                    <li class="nav-item"> <a class="nav-item nav-link" href="{% url 'login' %}">Login</a> </li>
+                    <li class="nav-item"> <a class="nav-item nav-link" href="{% url 'register' %}">Register</a> </li>
+                  {% endif %}
+                </ul>
+            </div>
+
+
+        </div>
+
+      </nav>
+
+    </header>
+
+
+    <main role="main" class="container">
+      <div class="row">
+        <div class="col-md-1">
+
+        </div>
+        <div class="col-md-10">
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+          {% block content %}{% endblock %}
+
+        </div>
+      </div>
+    </main>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+  <script>
+      // OUR FUNCTION WHICH IS EXECUTED ON LOAD OF THE PAGE.
+      function digitized() {
+          var dt = new Date();    // DATE() CONSTRUCTOR FOR CURRENT SYSTEM DATE AND TIME.
+          var hrs = dt.getHours();
+          var min = dt.getMinutes();
+          var sec = dt.getSeconds();
+
+          min = Ticking(min);
+          sec = Ticking(sec);
+
+          document.getElementById('dc').innerHTML = hrs + ":" + min;
+          document.getElementById('dc_second').innerHTML = sec;
+
+          if (hrs > 12) {
+              document.getElementById('dc_hour').innerHTML = 'PM';
+          }
+          else {
+              document.getElementById('dc_hour').innerHTML = 'AM';
+          }
+
+          // CALL THE FUNCTION EVERY 1 SECOND (RECURSION).
+          var time
+          time = setInterval('digitized()', 500);
+      }
+
+      function Ticking(ticVal) {
+          if (ticVal < 10) {
+              ticVal = "0" + ticVal;
+          }
+          return ticVal;
+      }
+  </script>
+
+</body>
+
+</html>

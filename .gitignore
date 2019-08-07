@@ -1,0 +1,11 @@
+.idea
+.vscode
+src/settings.py
+src/__pycache__/
+users/__pycache__/
+weather/__pycache__/
+accounts/__pycache__/
+static/favicon/
+static/flags/4x3/
+media/
+db.sqlite3
