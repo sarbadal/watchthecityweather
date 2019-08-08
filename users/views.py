@@ -1,3 +1,5 @@
+import json
+import requests
 from django.shortcuts import render, redirect
 from django.core.mail import send_mail
 from django.contrib import messages
@@ -9,6 +11,7 @@ from users.forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 # Create your views here.
 def register(request, *args, **kwargs):
     """Docstring"""
+
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
         if form.is_valid():
@@ -37,6 +40,11 @@ def register(request, *args, **kwargs):
 @login_required
 def profile(request):
     """Docstring"""
+    send_url = "http://api.ipstack.com/check?access_key=72705c363fc9ce983c3207a727db7f37"
+    geo_req = requests.get(send_url).json()
+    city = geo_req['city']
+    country = geo_req['country_name']
+
     if request.method == 'POST':
         u_form = UserUpdateForm(request.POST, instance=request.user)
         p_form = ProfileUpdateForm(
@@ -56,7 +64,9 @@ def profile(request):
 
     context = {
         'u_form': u_form,
-        'p_form': p_form
+        'p_form': p_form,
+        'location': city + ', ' + country if city is not None else country,
+        'country_flag': geo_req['country_code'].lower() + ".svg"
     }
 
     return render(request, 'users/profile.html', context)
