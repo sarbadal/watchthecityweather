@@ -44,11 +44,11 @@
                 <div class="column is-offset-2 is-6">
 
                     {% for city_weather in weather_data %}
-                    <div class="box">
+                    <div class="box" style="background-color:#eaf1f3;">
                         <article class="media">
                             <div class="media-left">
                                 <figure class="image is-70x70">
-                                    <img src="http://openweathermap.org/img/w/{{ city_weather.icon }}.png" alt="Image">
+                                    <img src="https://openweathermap.org/img/w/{{ city_weather.icon }}.png" alt="Image">
                                 </figure>
                             </div>
                             <div class="media-content">
@@ -56,7 +56,7 @@
                                     <p>
                                         <span class="title">
                                             {{ city_weather.city }}
-                                            <img src="{% static '/flags/1x1/'|add:city_weather.iso %}" class="img-rounded" alt="flag" style="width:17;height:17px;">
+                                            <img src="{% static '/flags/1x1/'|add:city_weather.iso %}" alt="flag" style="width:20;height:20px;">
                                         </span>
                                         <br>
                                         <span class="subtitle">{{ city_weather.temperature }}° C</span>
@@ -88,8 +88,8 @@
 <div class="container">
     <div class="columns">
         <div class="column is-offset-2 is-6">
-            <div style="font-size:50px; color:blue">
-                <a  href="{% url 'login' %}">Login</a> to watch weather
+            <div style="font-size:35px; color:blue">
+                <a  href="{% url 'login' %}">Login</a> to Watch the Weather
             </div>
         </div>
     </div>

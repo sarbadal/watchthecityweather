@@ -40,10 +40,20 @@ def register(request, *args, **kwargs):
 @login_required
 def profile(request):
     """Docstring"""
-    send_url = "http://api.ipstack.com/check?access_key=72705c363fc9ce983c3207a727db7f37"
+    ip = request.META.get('HTTP_X_REAL_IP')
+    send_url = f"https://api.ipstack.com/{ip}?access_key=72705c363fc9ce983c3207a727db7f37"
     geo_req = requests.get(send_url).json()
-    city = geo_req['city']
-    country = geo_req['country_name']
+    city = geo_req.get('city')
+    country = geo_req.get('country_name')
+
+    print(send_url)
+
+    if country is not None:
+        location = city + ', ' + country if city is not None else country
+        flag = geo_req.get('country_code').lower() + ".svg"
+    else:
+        location = 'Could not locate'
+        flag = 'None'
 
     if request.method == 'POST':
         u_form = UserUpdateForm(request.POST, instance=request.user)
@@ -65,8 +75,8 @@ def profile(request):
     context = {
         'u_form': u_form,
         'p_form': p_form,
-        'location': city + ', ' + country if city is not None else country,
-        'country_flag': geo_req['country_code'].lower() + ".svg"
+        'location': location,
+        'country_flag': flag
     }
 
     return render(request, 'users/profile.html', context)

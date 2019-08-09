@@ -11,7 +11,7 @@ def home(request):
     F = 'imperial'
     C = 'metric'
     unit = C
-    url = 'http://api.openweathermap.org/data/2.5/weather?q={}&units={}&' \
+    url = 'https://api.openweathermap.org/data/2.5/weather?q={}&units={}&' \
           'appid=822a96e083d1adb70682a06d37e42df6'
 
     if request.method == 'POST':

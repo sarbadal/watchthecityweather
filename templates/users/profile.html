@@ -19,7 +19,9 @@
 
                                 <span class="title" style="font-size:25px;">
                                     Your current location: {{ location }}
+                                    {% if country_flag != 'None' %}
                                     <img src="{% static '/flags/1x1/'|add:country_flag %}" class="img-rounded" alt="flag" style="width:20px;height:20px;">
+                                    {% endif %}
                                 </span>
 
                             </div>
@@ -36,7 +38,6 @@
         <div class="media-body">
             <div class="column is-offset-3 is-7">
                 <legend class="border-bottom mb-3" >{{ user.first_name }} {{ user.last_name }}</legend>
-<!--          <h3>{{ user.first_name }} {{ user.last_name }}</h3>-->
             <p>Username: {{ user.username }} </p>
             <p>Email: {{ user.email }}</p><br>
 
