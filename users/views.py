@@ -10,7 +10,7 @@ from users.forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 
 # Create your views here.
 def register(request, *args, **kwargs):
-    """Docstring"""
+    """User registration view"""
 
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
@@ -20,11 +20,29 @@ def register(request, *args, **kwargs):
             first_name = form.cleaned_data.get('first_name')
             email = form.cleaned_data.get('email')
 
-            messages.success(request, f'Your account has been created! You are now able to log in')
+            messages.success(
+                request,
+                'Your account has been created! You are now able to log in'
+            )
+
+            mail_body = """
+            Hi {}!
             
+            We're so happy you're here. We buuilt watchthecityweather.com to 
+            provide simple possible way to watch weather. We hope that you will
+            love the simplicity of this App.
+            
+            You can use {} or {} to sign in.
+            
+            
+            Best,
+            www.watchthecityweather.com team!
+            
+            """.format(first_name, username, email)
+
             send_mail(
                 'Welcome to Weather App!',
-                'Hi {}! \nThanks for joining us. You can use {} or email to sign in.'.format(first_name, username),
+                mail_body,
                 'watchthecityweather@gmail.com',
                 [email],
                 fail_silently=True
@@ -34,14 +52,22 @@ def register(request, *args, **kwargs):
     else:
         form = UserRegisterForm()
 
-    return render(request, 'users/register.html', {'form': form})
+    return render(
+        request,
+        'users/register.html',
+        {
+            'form': form,
+            'title': 'Registration'
+        }
+    )
 
 
 @login_required
 def profile(request):
     """Docstring"""
     ip = request.META.get('HTTP_X_REAL_IP')
-    send_url = f"https://api.ipstack.com/{ip}?access_key=72705c363fc9ce983c3207a727db7f37"
+    access_key = '72705c363fc9ce983c3207a727db7f37'
+    send_url = f"https://api.ipstack.com/{ip}?access_key={access_key}"
     geo_req = requests.get(send_url).json()
     city = geo_req.get('city')
     country = geo_req.get('country_name')
@@ -76,7 +102,8 @@ def profile(request):
         'u_form': u_form,
         'p_form': p_form,
         'location': location,
-        'country_flag': flag
+        'country_flag': flag,
+        'title': 'Profile',
     }
 
     return render(request, 'users/profile.html', context)
@@ -90,13 +117,20 @@ def change_password(request):
         if form.is_valid():
             user = form.save()
             update_session_auth_hash(request, user)  # Important!
-            messages.success(request, 'Your password was successfully updated!')
+            messages.success(
+                request,
+                'Your password was successfully updated!'
+            )
 
             return redirect('home')
-            
+
         else:
             messages.error(request, 'Please correct the error below.')
     else:
         form = PasswordChangeForm(request.user)
 
-    return render(request, 'users/change_password.html', {'form': form})
+    return render(
+        request,
+        'users/change_password.html',
+        {'form': form, 'title': 'Change Password'}
+    )

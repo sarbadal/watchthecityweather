@@ -15,7 +15,11 @@ def login_view(request, *args, **kwargs):
         login(request, user_obj)
         return redirect('home')
 
-    return render(request, 'users/login.html', {"form": form})
+    return render(
+        request,
+        'users/login.html',
+        {"form": form, 'title': 'Login'}
+    )
 
 
 def logout_view(request):

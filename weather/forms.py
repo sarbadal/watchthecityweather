@@ -8,4 +8,8 @@ class CityForm(ModelForm):
         """Meta class Docstring"""
         model = City
         fields = ['user', 'city_name']
-        widgets = {'city_name': TextInput(attrs={'class': 'input', 'placeholder': 'City Name'})}
+        widgets = {
+            'city_name': TextInput(
+                attrs={'class': 'input', 'placeholder': 'City Name'}
+            )
+        }

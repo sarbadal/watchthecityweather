@@ -43,10 +43,12 @@ class UserLoginForm(forms.Form):
         """Docstring"""
         query = self.cleaned_data.get('query')
         password = self.cleaned_data.get('password')
-        user_qs_final = User.objects.filter(Q(username__iexact=query) | Q(email__iexact=query)).distinct()
+        user_qs_final = User.objects.filter(
+            Q(username__iexact=query) | Q(email__iexact=query)
+        ).distinct()
 
         if not user_qs_final.exists() and user_qs_final.count != 1:
-            raise forms.ValidationError("Invalid credentials - user does note exist")
+            raise forms.ValidationError("User does note exist")
 
         user_obj = user_qs_final.first()
 

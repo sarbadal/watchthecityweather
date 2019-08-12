@@ -12,12 +12,28 @@ class UserAdmin(BaseUserAdmin):
     """Docstring"""
     add_form = UserCreationForm
 
-    list_display = ('username', 'email', 'first_name', 'last_name', 'is_active', 'is_admin')
+    list_display = (
+        'username',
+        'email',
+        'first_name',
+        'last_name',
+        'is_active',
+        'is_admin',
+        'is_staff'
+    )
     list_filter = ('is_admin',)
     fieldsets = (
         (
             None, {
-                'fields': ('username', 'email', 'first_name', 'last_name', 'is_active', 'password')
+                'fields': (
+                    'username',
+                    'email',
+                    'first_name',
+                    'last_name',
+                    'is_active',
+                    'is_staff',
+                    'password'
+                )
             }
         ),
         ('Permissions', {

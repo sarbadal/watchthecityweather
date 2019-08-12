@@ -8,17 +8,15 @@ from weather.forms import CityForm
 # Create your views here.
 def home(request):
     """Docstring"""
-    F = 'imperial'
-    C = 'metric'
-    unit = C
-    url = 'https://api.openweathermap.org/data/2.5/weather?q={}&units={}&' \
-          'appid=822a96e083d1adb70682a06d37e42df6'
+    unit = 'metric'  # 'imperial'
+    appid = '822a96e083d1adb70682a06d37e42df6'
+    url = 'https://api.openweathermap.org/data/2.5/weather?q={}&units={}&appid={}'
 
     if request.method == 'POST':
         user_to_add = request.user
         city_to_add = request.POST['city_name']
 
-        r = requests.get(url.format(city_to_add, unit)).json()
+        r = requests.get(url.format(city_to_add, unit, appid)).json()
 
         if r['cod'] == 200:
 
@@ -47,18 +45,23 @@ def home(request):
         weather_data = []
 
         for city in cities:
-            r = requests.get(url.format(city, unit)).json()
+            r = requests.get(url.format(city, unit, appid)).json()
 
             city_weather = {
                 'city': city.city_name,
                 'temperature': r['main']['temp'],
                 'description': r['weather'][0]['description'],
                 'icon': r['weather'][0]['icon'],
-                'iso': '{}.svg'.format(r['sys']['country'].lower())
+                'iso': '{}.svg'.format(r['sys']['country'].lower()),
+                'min_temp': r['main']['temp_min'],
+                'max_temp': r['main']['temp_max'],
+                'humidity': r['main']['humidity'],
+                'wind_speed': round(r['wind']['speed'] * 3.6, 2)
             }
 
             weather_data.append(city_weather)
 
+        weather_data.reverse()
         context = {
             'weather_data': weather_data,
             'form': CityForm()

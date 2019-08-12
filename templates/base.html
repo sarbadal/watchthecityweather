@@ -17,97 +17,156 @@
     <link rel="shortcut icon" href="{% static 'favicon/favicon_weather.png' %}"/>
 
     <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.css" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link href='https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="{% static 'CSS/main.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'CSS/weatherBox.css' %}">
     <link href="https://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet" type="text/css"/>
+
+    <meta name="google-site-verification" content="pyDi_NwvsIJA6nFwzEy4D__JSiOLH3ysAUH435kvifE" />
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-145273709-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-145273709-1');
+      gtag('set', {'user_id': 'USER_ID'}); // Set the user ID using signed-in user_id.
+      ga('set', 'userId', 'USER_ID'); // Set the user ID using signed-in user_id.
+    </script>
+
+    <style>
+    body {
+        animation: bgcolor infinite 20s;
+    }
+
+    @keyframes bgcolor {
+      0%
+      {
+        background: #f5fffa;
+      }
+      20%
+      {
+        background: #e6e6fa;
+      }
+      40%
+      {
+        background: #eee8dc;
+      }
+      60%
+      {
+        background: #fffafa;
+      }
+      80%
+      {
+        background: #eedfcc;
+      }
+      100%
+      {
+        background: #f5fffa;
+      }
+    }
+    .tabBlock
+    {
+      /* background-color:#57574f; */
+      border:solid 0px #FFA54F;
+      border-radius:5px; -moz-border-radius:5px; -webkit-border-radius:5px;
+      max-width:200px;
+      width:100%;
+      overflow:hidden;
+      display:block;
+    }
+    .clock
+    {
+      vertical-align:middle;
+      font-family:Orbitron;
+      font-size:30px;
+      font-weight:normal;
+      color:#FFF;
+      padding:0 5px;
+    }
+    .clocklg
+    {
+      vertical-align:middle;
+      font-family:Orbitron;
+      font-size:15px;
+      font-weight:normal;
+      color:#FFF;
+    }
+
+    .prelogin-title {
+        position: absolute;
+        margin-top: 15em;
+        top: 50%;
+        left: 50%;
+        transform: translateX(-50%) translateY(-50%);
+    }
+    .prelogin-title h1 {
+        color: #3271a8;
+        font-size: 70px
+    }
+    </style>
 
 
     {% if title %}
-        <title>Watch the City Weather  - {{ title }}</title>
+        <title>City Weather | {{ title }}</title>
     {% else %}
         <title>Watch the City Weather</title>
     {% endif %}
-
-      <style>
-          .tabBlock
-          {
-              /* background-color:#57574f; */
-              border:solid 0px #FFA54F;
-              border-radius:5px; -moz-border-radius:5px; -webkit-border-radius:5px;
-              max-width:200px;
-              width:100%;
-              overflow:hidden;
-              display:block;
-          }
-          .clock
-          {
-              vertical-align:middle;
-              font-family:Orbitron;
-              font-size:30px;
-              font-weight:normal;
-              color:#FFF;
-              padding:0 5px;
-          }
-          .clocklg
-          {
-              vertical-align:middle;
-              font-family:Orbitron;
-              font-size:15px;
-              font-weight:normal;
-              color:#FFF;
-          }
-      </style>
 
   {% endblock %}
 </head>
 
 <body onload="digitized();">
     <header class="site-header">
-      <nav class="navbar navbar-expand-md bg-steel fixed-top navbar-light" style="background-color: #8587f2;">
+      <nav class="navbar navbar-expand-md bg-steel fixed-top  navbar-light" style="background-color: #8587f2;">
 
         <div class="container">
 
-          <a class="navbar-brand mr-4" href="{% url 'home' %}">What's the weather look like?</a>
+            <a class="navbar-brand mr-4" href="{% url 'home' %}">What's the weather look like?</a>
 
-          <div>
-              <table class="tabBlock" align="center" cellspacing="0" cellpadding="0" border="0">
-                  <tr><td class="clock" id="dc"></td>  <!-- THE DIGITAL CLOCK. -->
-                      <td>
-                          <table cellpadding="0" cellspacing="0" border="0">
+            <div>
+                <table class="tabBlock" align="center" cellspacing="0" cellpadding="0" border="0">
+                    <tr><td class="clock" id="dc"></td>  <!-- THE DIGITAL CLOCK. -->
+                        <td>
+                            <table cellpadding="0" cellspacing="0" border="0">
 
-                              <!-- HOUR IN 'AM' AND 'PM'. -->
-                              <tr><td class="clocklg" id="dc_hour"></td></tr>
+                                <!-- HOUR IN 'AM' AND 'PM'. -->
+                                <tr><td class="clocklg" id="dc_hour"></td></tr>
 
-                              <!-- SHOWING SECONDS. -->
-                              <tr><td class="clocklg" id="dc_second"></td></tr>
-                          </table>
-                      </td>
-                  </tr>
-              </table>
-          </div>
+                                <!-- SHOWING SECONDS. -->
+                                <tr><td class="clocklg" id="dc_second"></td></tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </div>
 
           {% if user.is_authenticated %}
-          <a class="nav-item nav-link disabled">Welcome {{user.first_name}}!</a>
+          <a class="nav-item disabled">Welcome {{user.first_name}}!</a>
           {% endif %}
-
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-          </button>
 
             <!-- Navbar Right Side -->
             <div class="navbar-nav">
-                <ul class="nav justify-content-end">
+                <!--<ul class="nav justify-content-end">-->
                   {% if user.is_authenticated %}
-                    <li class="nav-item"> <a class="nav-item nav-link" href="{% url 'profile' %}">{{user.email}}</a> </li>
-                    <li class="nav-item"> <a class="nav-item nav-link " href="{% url 'logout' %}">Logout</a> </li>
+                    <!--<li class="nav-item"> <a class="nav-item nav-link" href="{% url 'profile' %}">{{user.email}}</a> </li>-->
+                    <a class="nav-item nav-link" href="{% url 'profile' %}">{{user.email}}</a>
+                    <!--<li class="nav-item"> <a class="nav-item nav-link " href="{% url 'logout' %}">Logout</a> </li>-->
+                    <a class="nav-item nav-link " href="{% url 'logout' %}">Logout</a>
                   {% else %}
-                    <li class="nav-item"> <a class="nav-item nav-link" href="{% url 'login' %}">Login</a> </li>
-                    <li class="nav-item"> <a class="nav-item nav-link" href="{% url 'register' %}">Register</a> </li>
+                    <!--<li class="nav-item"> <a class="nav-item nav-link" href="{% url 'login' %}">Login</a> </li>-->
+                    <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
+                    <!--<li class="nav-item"> <a class="nav-item nav-link" href="{% url 'register' %}">Register</a> </li>-->
+                    <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
                   {% endif %}
-                </ul>
+                <!--</ul>-->
             </div>
 
+          <!--</div>-->
 
         </div>
 
