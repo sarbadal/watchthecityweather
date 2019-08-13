@@ -1,5 +1,6 @@
 .idea
 .vscode
+__pycache__/
 src/settings.py
 src/__pycache__/
 users/__pycache__/

@@ -9,4 +9,5 @@ class ProfileAdmin(admin.ModelAdmin):
     """class docstring"""
     list_display = ['user', 'city']
 
+
 admin.site.register(Profile, ProfileAdmin)

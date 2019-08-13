@@ -1,4 +1,3 @@
-import json
 import requests
 from django.shortcuts import render, redirect
 from django.core.mail import send_mail
@@ -7,6 +6,7 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.decorators import login_required
 from users.forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
+
 
 # Create your views here.
 def register(request, *args, **kwargs):
@@ -27,17 +27,17 @@ def register(request, *args, **kwargs):
 
             mail_body = """
             Hi {}!
-            
-            We're so happy you're here. We buuilt watchthecityweather.com to 
+
+            We're so happy you're here. We buuilt watchthecityweather.com to
             provide simple possible way to watch weather. We hope that you will
             love the simplicity of this App.
-            
+
             You can use {} or {} to sign in.
-            
-            
+
+
             Best,
             www.watchthecityweather.com team!
-            
+
             """.format(first_name, username, email)
 
             send_mail(

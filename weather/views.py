@@ -5,12 +5,14 @@ from django.shortcuts import render, redirect
 from weather.models import City
 from weather.forms import CityForm
 
+
 # Create your views here.
 def home(request):
     """Docstring"""
     unit = 'metric'  # 'imperial'
     appid = '822a96e083d1adb70682a06d37e42df6'
-    url = 'https://api.openweathermap.org/data/2.5/weather?q={}&units={}&appid={}'
+    url = 'https://api.openweathermap.org/data/2.5/weather?'
+    url += 'q={}&units={}&appid={}'
 
     if request.method == 'POST':
         user_to_add = request.user
@@ -29,7 +31,10 @@ def home(request):
             if existing_city_count == 0:
 
                 city = "{}, {}".format(r['name'], r['sys']['country'])
-                city_obj = City.objects.create(user=user_to_add, city_name=city)
+                city_obj = City.objects.create(
+                    user=user_to_add,
+                    city_name=city
+                )
                 city_obj.save()
 
                 messages.success(request, 'City has been added successfully!')
@@ -40,7 +45,7 @@ def home(request):
         else:
             messages.error(request, 'City not found')
 
-    try:
+    if request.user.id is not None:
         cities = City.objects.filter(user=request.user)
         weather_data = []
 
@@ -69,7 +74,7 @@ def home(request):
 
         return render(request, 'home/home.html', context)
 
-    except:
+    else:
         return render(request, 'home/home.html', {'form': CityForm()})
 
 
@@ -86,4 +91,3 @@ def temperature_toggle(request, cf):
 
     print(request.GET)
     return redirect('home')
-

@@ -1,8 +1,6 @@
-import requests
 from django.shortcuts import render, redirect
-from django.contrib.auth import login, get_user_model, logout
-from django.http import HttpResponseRedirect
-from accounts.forms import UserCreationForm, UserLoginForm
+from django.contrib.auth import login, logout
+from accounts.forms import UserLoginForm
 
 
 # Create your views here.
@@ -26,4 +24,3 @@ def logout_view(request):
     """Docstring"""
     logout(request)
     return redirect("login")
-

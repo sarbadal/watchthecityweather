@@ -45,9 +45,23 @@ class CustomUser(AbstractBaseUser):
         ],
         unique=True
     )
-    email = models.EmailField(max_length=510, unique=True, verbose_name='email address')
-    first_name = models.CharField(max_length=255, blank=True, null=True, verbose_name='First Name')
-    last_name = models.CharField(max_length=255, blank=True, null=True, verbose_name='Last Name')
+    email = models.EmailField(
+        max_length=510,
+        unique=True,
+        verbose_name='email address'
+    )
+    first_name = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        verbose_name='First Name'
+    )
+    last_name = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        verbose_name='Last Name'
+    )
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
@@ -56,7 +70,6 @@ class CustomUser(AbstractBaseUser):
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email', 'first_name']
-
 
     def __str__(self):
         return self.email
@@ -74,7 +87,6 @@ class CustomUser(AbstractBaseUser):
         """Does the user have permissions to view the app `app_label`?"""
         # Simplest possible answer: Yes, always
         return True
-
 
     class Meta:
         """Meta class"""
