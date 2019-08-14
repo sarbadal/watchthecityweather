@@ -1,54 +1,64 @@
 import requests
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.decorators import login_required
+from django.template.loader import render_to_string
+from accounts.models import CustomUser
 from users.forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
+from users.token import activation_token
 
 
 # Create your views here.
+def get_client_ip(request):
+    """Get the client's IP address"""
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[-1].strip()
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
+
+
 def register(request, *args, **kwargs):
     """User registration view"""
 
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
         if form.is_valid():
-            form.save()
+            instance = form.save(commit=False)
+            instance.is_active = False
+            instance.save()
+
+            site = get_current_site(request)
             username = form.cleaned_data.get('username')
             first_name = form.cleaned_data.get('first_name')
             email = form.cleaned_data.get('email')
-
-            messages.success(
-                request,
-                'Your account has been created! You are now able to log in'
+            message_html = render_to_string(
+                'users/verify_email.html',
+                {
+                    'user': instance,
+                    'username': username,
+                    'first_name': first_name,
+                    'email': email,
+                    'domain': site.domain,
+                    'uid': instance.id,
+                    'token': activation_token.make_token(instance)
+                }
             )
-
-            mail_body = """
-            Hi {}!
-
-            We're so happy you're here. We buuilt watchthecityweather.com to
-            provide simple possible way to watch weather. We hope that you will
-            love the simplicity of this App.
-
-            You can use {} or {} to sign in.
-
-
-            Best,
-            www.watchthecityweather.com team!
-
-            """.format(first_name, username, email)
-
             send_mail(
-                'Welcome to Weather App!',
-                mail_body,
+                'Confirmation message - watchthecityweather.com',
+                message_html,
                 'watchthecityweather@gmail.com',
                 [email],
                 fail_silently=True
             )
 
-            return redirect('login')
+            return render(request, 'users/registration_start.html')
+            # return redirect('login')
     else:
         form = UserRegisterForm()
 
@@ -65,9 +75,10 @@ def register(request, *args, **kwargs):
 @login_required
 def profile(request):
     """Docstring"""
-    ip = request.META.get('HTTP_X_REAL_IP')
+    ip = get_client_ip(request)
+    # ip = request.META.get('HTTP_X_REAL_IP')
     access_key = '72705c363fc9ce983c3207a727db7f37'
-    send_url = f"https://api.ipstack.com/{ip}?access_key={access_key}"
+    send_url = f"http://api.ipstack.com/{ip}?access_key={access_key}"
     geo_req = requests.get(send_url).json()
     city = geo_req.get('city')
     country = geo_req.get('country_name')
@@ -134,3 +145,17 @@ def change_password(request):
         'users/change_password.html',
         {'form': form, 'title': 'Change Password'}
     )
+
+
+def activate_user_account(request, uid, token):
+    """activate user account through email"""
+    user = get_object_or_404(CustomUser, pk=uid)
+
+    if user is not None and activation_token.check_token(user, token):
+        user.is_active = True
+        user.save()
+
+        return render(request, 'users/registration_complete.html')
+
+    else:
+        return render(request, 'users/registration_error.html')

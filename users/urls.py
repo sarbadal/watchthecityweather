@@ -1,6 +1,11 @@
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
-from users.views import change_password, profile, register
+from users.views import (
+    change_password,
+    profile,
+    register,
+    activate_user_account
+)
 from accounts.views import login_view, logout_view
 
 urlpatterns = [
@@ -39,4 +44,7 @@ urlpatterns = [
         ),
         name='password_reset_complete'
     ),
+
+    # account activatetion
+    path('activate/<uid>/<token>/', activate_user_account, name='activation')
 ]

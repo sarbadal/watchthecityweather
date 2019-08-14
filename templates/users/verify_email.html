@@ -1,0 +1,11 @@
+{% autoescape off %}
+Hi {{ first_name }}!
+
+We're so happy you're here. watchthecityweather.com is a very simple way to
+watch current city weather.
+Please click on the link below to confirm your registration.
+http://{{ domain }}{% url 'activation' uid=uid token=token %}
+
+Best,
+watchthecityweather.com team!
+{% endautoescape %}

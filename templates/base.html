@@ -17,6 +17,7 @@
     <link rel="shortcut icon" href="{% static 'favicon/favicon_weather.png' %}"/>
 
     <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.css" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link href='https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css' rel='stylesheet' type='text/css'>
@@ -126,7 +127,7 @@
 
         <div class="container">
 
-            <a class="navbar-brand mr-4" href="{% url 'home' %}">What's the weather look like?</a>
+            <a class="fa fa-thermometer nav-item nav-link" style="font-size:25px;color:#000" href="{% url 'home' %}"> What's the weather?</a>
 
             <div>
                 <table class="tabBlock" align="center" cellspacing="0" cellpadding="0" border="0">
@@ -146,27 +147,19 @@
             </div>
 
           {% if user.is_authenticated %}
-          <a class="nav-item disabled">Welcome {{user.first_name}}!</a>
+          <a class="nav-item disabled" style="font-size:20px;color:#631439">Welcome {{user.first_name}}!</a>
           {% endif %}
 
             <!-- Navbar Right Side -->
             <div class="navbar-nav">
-                <!--<ul class="nav justify-content-end">-->
                   {% if user.is_authenticated %}
-                    <!--<li class="nav-item"> <a class="nav-item nav-link" href="{% url 'profile' %}">{{user.email}}</a> </li>-->
-                    <a class="nav-item nav-link" href="{% url 'profile' %}">{{user.email}}</a>
-                    <!--<li class="nav-item"> <a class="nav-item nav-link " href="{% url 'logout' %}">Logout</a> </li>-->
-                    <a class="nav-item nav-link " href="{% url 'logout' %}">Logout</a>
+                    <a class="fa fa-envelope nav-item nav-link" style="font-size:20px;color:blue" href="{% url 'profile' %}"> {{user.email}}</a>
+                    <a class="fa fa-sign-out nav-item nav-link" style="font-size:20px;color:#b0272e" href="{% url 'logout' %}"> Logout</a>
                   {% else %}
-                    <!--<li class="nav-item"> <a class="nav-item nav-link" href="{% url 'login' %}">Login</a> </li>-->
-                    <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
-                    <!--<li class="nav-item"> <a class="nav-item nav-link" href="{% url 'register' %}">Register</a> </li>-->
-                    <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
+                    <a class="fa fa-sign-in nav-item nav-link" style="font-size:20px;color:#631439" href="{% url 'login' %}"> Login</a>
+                    <a class="fa fa-registered nav-item nav-link" style="font-size:20px;color:blue" href="{% url 'register' %}"> Register</a>
                   {% endif %}
-                <!--</ul>-->
             </div>
-
-          <!--</div>-->
 
         </div>
 
